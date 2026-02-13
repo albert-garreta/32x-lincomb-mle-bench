@@ -1,0 +1,28 @@
+[package]
+name = "mle-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ark-ff = "0.5"
+ark-std = "0.5"
+ark-serialize = "0.5"
+rayon = "1.10"
+rand = "0.8"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "mle_bench"
+harness = false
+
+[profile.bench]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
