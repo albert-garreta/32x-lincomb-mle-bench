@@ -7,8 +7,8 @@ use mle_bench::*;
 // Target parameters: 32 independent computations, each m=40, n=2^10
 // ---------------------------------------------------------------------------
 const NUM_COMPUTATIONS: usize = 32;
-const M: usize = 17;
-const LOG_N: usize = 8;
+const M: usize = 3;
+const LOG_N: usize = 14;
 const N: usize = 1 << LOG_N;
 
 // ---------------------------------------------------------------------------
