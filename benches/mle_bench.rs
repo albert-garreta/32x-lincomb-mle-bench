@@ -6,10 +6,10 @@ use mle_bench::*;
 // ---------------------------------------------------------------------------
 // Target parameters: 32 independent computations, each m=40, n=2^10
 // ---------------------------------------------------------------------------
-const NUM_COMPUTATIONS: usize = 32;
-const M: usize = 3;
-const LOG_N: usize = 14;
+const M: usize = 272;
+const LOG_N: usize = 10;
 const N: usize = 1 << LOG_N;
+const NUM_COMPUTATIONS: usize = 32;
 
 // ---------------------------------------------------------------------------
 // Benchmark: single sequential computation (baseline per-instance cost)
@@ -23,7 +23,7 @@ fn bench_single_lincomb_mle(c: &mut Criterion) {
     let point = random_field_vec(LOG_N);
 
     group.throughput(Throughput::Elements((M * N) as u64));
-    group.bench_function("m=40,n=2^10", |b| {
+    group.bench_function(&format!("m={M},n=2^{LOG_N}"), |b| {
         b.iter(|| {
             black_box(lincomb_then_mle_eval_seq(&vectors, &coeffs, &point));
         })
@@ -42,7 +42,7 @@ fn bench_single_lincomb(c: &mut Criterion) {
     let coeffs = random_field_vec(M);
 
     group.throughput(Throughput::Elements((M * N) as u64));
-    group.bench_function("m=40,n=2^10", |b| {
+    group.bench_function(&format!("m={M},n=2^{LOG_N}"), |b| {
         b.iter(|| {
             black_box(linear_combination_seq(&vectors, &coeffs));
         })
@@ -61,7 +61,7 @@ fn bench_single_mle(c: &mut Criterion) {
     let point = random_field_vec(LOG_N);
 
     group.throughput(Throughput::Elements(N as u64));
-    group.bench_function("n=2^10", |b| {
+    group.bench_function(&format!("n=2^{LOG_N}"), |b| {
         b.iter(|| {
             black_box(mle_eval_seq(&evals, &point));
         })
@@ -82,7 +82,7 @@ fn bench_batch_seq(c: &mut Criterion) {
     group.throughput(Throughput::Elements(
         (NUM_COMPUTATIONS * M * N) as u64,
     ));
-    group.bench_function("32x_m=40,n=2^10", |b| {
+    group.bench_function(&format!("{NUM_COMPUTATIONS}x_m={M},n=2^{LOG_N}"), |b| {
         b.iter(|| {
             black_box(batch_lincomb_then_mle_eval_seq(
                 &all_vectors,
@@ -107,7 +107,7 @@ fn bench_batch_par(c: &mut Criterion) {
     group.throughput(Throughput::Elements(
         (NUM_COMPUTATIONS * M * N) as u64,
     ));
-    group.bench_function("32x_m=40,n=2^10", |b| {
+    group.bench_function(&format!("{NUM_COMPUTATIONS}x_m={M},n=2^{LOG_N}"), |b| {
         b.iter(|| {
             black_box(batch_lincomb_then_mle_eval(
                 &all_vectors,
@@ -132,7 +132,7 @@ fn bench_batch_lincomb_par(c: &mut Criterion) {
     group.throughput(Throughput::Elements(
         (NUM_COMPUTATIONS * M * N) as u64,
     ));
-    group.bench_function("32x_m=40,n=2^10", |b| {
+    group.bench_function(&format!("{NUM_COMPUTATIONS}x_m={M},n=2^{LOG_N}"), |b| {
         b.iter(|| {
             black_box(batch_linear_combination(&all_vectors, &all_coeffs));
         })
@@ -157,7 +157,7 @@ fn bench_batch_mle_par(c: &mut Criterion) {
     group.throughput(Throughput::Elements(
         (NUM_COMPUTATIONS * N) as u64,
     ));
-    group.bench_function("32x_n=2^10", |b| {
+    group.bench_function(&format!("{NUM_COMPUTATIONS}x_n=2^{LOG_N}"), |b| {
         b.iter(|| {
             black_box(batch_mle_eval(&all_evals, &all_points));
         })
